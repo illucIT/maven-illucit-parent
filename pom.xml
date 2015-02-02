@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2015, illucIT Software GmbH -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.illucit</groupId>
+	<artifactId>illucit-parent</artifactId>
+	<version>2</version>
+	<packaging>pom</packaging>
+
+	<name>illucIT Maven parent</name>
+	<description>Parent maven artifact for all illucIT projects with maven.</description>
+	<url>http://www.illucit.com</url>
+
+	<organization>
+		<name>illucIT Software GmbH</name>
+		<url>http://www.illucit.com</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>lgpl</name>
+			<url>http://repository.illucit.com/licenses/lgpl-2.1-standalone.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:${illucit.scm.connection}</connection>
+		<developerConnection>scm:git:${illucit.scm.connection}</developerConnection>
+		<url>${illucit.scm.url}</url>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>csimon</id>
+			<name>Christian Simon</name>
+			<email>simon@illucit.com</email>
+			<url>https://github.com/metaxmx</url>
+		</developer>
+	</developers>
+
+	<repositories>
+		<!-- illucIT Company Repository -->
+		<repository>
+			<id>illucit</id>
+			<name>illucIT Company Maven Repository</name>
+			<url>http://repository.illucit.com</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>illucit-ssh</id>
+			<name>illucIT Repository SSH</name>
+			<url>${illucit-ssh-deployment-url}</url>
+		</repository>
+	</distributionManagement>
+
+	<properties>
+		<!-- Release Info -->
+		<illucit.scm.connection>git@github.com:illucIT/maven-illucit-parent.git</illucit.scm.connection>
+		<illucit.scm.url>https://github.com/illucIT/maven-illucit-parent</illucit.scm.url>
+
+		<!-- Charset -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- Target Java Compatibility -->
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.7</maven.compiler.source>
+
+		<!-- Plugin versions -->
+		<version.compiler.plugin>3.2</version.compiler.plugin>
+		<version.source.plugin>2.4</version.source.plugin>
+		<version.javadoc.plugin>2.10.1</version.javadoc.plugin>
+		<version.wagon.plugin>2.8</version.wagon.plugin>
+
+		<!-- Recent versions of plugins for use in child projects -->
+		<version.surefire.plugin>2.18.1</version.surefire.plugin>
+		<version.ear.plugin>2.10</version.ear.plugin>
+		<version.ejb.plugin>2.5</version.ejb.plugin>
+		<version.war.plugin>2.6</version.war.plugin>
+
+		<!-- EJB settings -->
+		<maven.ejb.version>3.2</maven.ejb.version>
+	</properties>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${version.compiler.plugin}</version>
+					<configuration>
+						<source>${maven.compiler.source}</source>
+						<target>${maven.compiler.target}</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${version.source.plugin}</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar-no-fork</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${version.javadoc.plugin}</version>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<artifactId>maven-ejb-plugin</artifactId>
+					<version>${version.ejb.plugin}</version>
+					<configuration>
+						<ejbVersion>${maven.ejb.version}</ejbVersion>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${version.surefire.plugin}</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-ear-plugin</artifactId>
+					<version>${version.ear.plugin}</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>${version.war.plugin}</version>
+					<configuration>
+						<failOnMissingWebXml>false</failOnMissingWebXml>
+						<attachClasses>true</attachClasses>
+						<warSourceDirectory>WebContent</warSourceDirectory>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>${version.wagon.plugin}</version>
+			</extension>
+		</extensions>
+	</build>
+
+</project>
