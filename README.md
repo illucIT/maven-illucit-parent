@@ -1,5 +1,9 @@
+![illucIT Logo][logo]
+
 illucIT Parent: Parent Maven Project
 ====================================
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.illucit/illucit-parent.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.illucit%22%20AND%20a:%22illucit-parent%22)
 
 **Author**: Christian Simon <[simon@illucit.com](mailto:simon@illucit.com)>  
 **Copyright**: illucIT Software GmbH  
@@ -18,5 +22,7 @@ To use this as your maven parent, set the following parent tag in you Maven ``po
     <parent>
         <groupId>com.illucit</groupId>
         <artifactId>illucit-parent</artifactId>
-        <version>3</version>
+        <version>4</version>
     </parent>
+
+[logo]: ./images/illucit-logo.png "illucIT Software"

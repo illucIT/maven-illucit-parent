@@ -7,7 +7,7 @@
 
 	<groupId>com.illucit</groupId>
 	<artifactId>illucit-parent</artifactId>
-	<version>3</version>
+	<version>4</version>
 	<packaging>pom</packaging>
 
 	<name>illucIT Maven parent</name>
@@ -55,19 +55,6 @@
         </repository>
     </repositories>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-	</distributionManagement>
-
 	<properties>
 		<!-- SCM Info -->
 		<illucit.scm.connection>git@github.com:illucIT/maven-illucit-parent.git</illucit.scm.connection>
@@ -76,23 +63,30 @@
 		<!-- Charset -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<!-- Target Java Compatibility -->
-		<maven.compiler.target>1.7</maven.compiler.target>
-		<maven.compiler.source>1.7</maven.compiler.source>
+		<!-- Maven, Java Version -->
+		<maven.required.maven-version>[3.0.5,)</maven.required.maven-version>
+		<maven.required.java-version>[1.8,)</maven.required.java-version>
 
 		<!-- Plugin versions -->
-		<version.compiler.plugin>3.2</version.compiler.plugin>
-		<version.source.plugin>2.4</version.source.plugin>
-		<version.javadoc.plugin>2.10.1</version.javadoc.plugin>
-		<version.enforcer.plugin>1.4.1</version.enforcer.plugin>
-        <version.gpg.plugin>1.5</version.gpg.plugin>
-		<version.wagon.plugin>2.8</version.wagon.plugin>
+		<version.clean.plugin>3.1.0</version.clean.plugin>
+		<version.compiler.plugin>3.8.1</version.compiler.plugin>
+		<version.source.plugin>3.0.1</version.source.plugin>
+		<version.javadoc.plugin>3.1.0</version.javadoc.plugin>
+		<version.deploy.plugin>3.0.0-M1</version.deploy.plugin>
+		<version.install.plugin>3.0.0-M1</version.install.plugin>
+		<version.release.plugin>2.5.3</version.release.plugin>
+		<version.enforcer.plugin>3.0.0-M2</version.enforcer.plugin>
+        <version.gpg.plugin>1.6</version.gpg.plugin>
+        <version.dependency.plugin>3.1.1</version.dependency.plugin>
+		<version.versions.plugin>2.7</version.versions.plugin>
 
 		<!-- Recent versions of plugins for use in child projects -->
-		<version.surefire.plugin>2.18.1</version.surefire.plugin>
-		<version.ear.plugin>2.10</version.ear.plugin>
-		<version.ejb.plugin>2.5</version.ejb.plugin>
-		<version.war.plugin>2.6</version.war.plugin>
+		<version.surefire.plugin>3.0.0-M3</version.surefire.plugin>
+		<version.failsafe.plugin>3.0.0-M3</version.failsafe.plugin>
+		<version.ear.plugin>3.0.1</version.ear.plugin>
+		<version.ejb.plugin>3.0.1</version.ejb.plugin>
+		<version.war.plugin>3.2.2</version.war.plugin>
+		<version.site.plugin>3.7.1</version.site.plugin>
 
 		<!-- EJB settings -->
 		<maven.ejb.version>3.2</maven.ejb.version>
@@ -113,40 +107,40 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>(,2.1.0),(2.1.0,2.2.0),(2.2.0,)</version>
-                                    <message>Maven 2.1.0 and 2.2.0 produce incorrect GPG signatures and checksums respectively.</message>
+                                    <version>${maven.required.maven-version}</version>
+                                    <message>Maven should be greater or equal the version 3.0</message>
+									<level>WARN</level>
                                 </requireMavenVersion>
+								<requireJavaVersion>
+									<version>${maven.required.java-version}</version>
+									<message>At least JDK8 required</message>
+									<level>ERROR</level>
+								</requireJavaVersion>
                             </rules>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>${version.versions.plugin}</version>
+			</plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>${version.gpg.plugin}</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
+				<groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${version.dependency.plugin}</version>
             </plugin>
         </plugins>
         <pluginManagement>
 			<plugins>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${version.compiler.plugin}</version>
-					<configuration>
-						<source>${maven.compiler.source}</source>
-						<target>${maven.compiler.target}</target>
-					</configuration>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
 					<version>${version.source.plugin}</version>
 					<executions>
@@ -159,6 +153,7 @@
 					</executions>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>${version.javadoc.plugin}</version>
 					<executions>
@@ -171,6 +166,12 @@
 					</executions>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>${version.gpg.plugin}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-ejb-plugin</artifactId>
 					<version>${version.ejb.plugin}</version>
 					<configuration>
@@ -178,14 +179,32 @@
 					</configuration>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${version.surefire.plugin}</version>
+					<configuration>
+						<argLine>
+							--illegal-access=permit
+						</argLine>
+					</configuration>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>${version.failsafe.plugin}</version>
+					<configuration>
+						<argLine>
+							--illegal-access=permit
+						</argLine>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-ear-plugin</artifactId>
 					<version>${version.ear.plugin}</version>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
 					<version>${version.war.plugin}</version>
 					<configuration>
@@ -194,25 +213,73 @@
 						<warSourceDirectory>WebContent</warSourceDirectory>
 					</configuration>
 				</plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.1</version>
-                    <configuration>
-                        <mavenExecutorId>forked-path</mavenExecutorId>
-                        <useReleaseProfile>false</useReleaseProfile>
-                        <arguments>-Psonatype-oss-release</arguments>
-                    </configuration>
-                </plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>${version.clean.plugin}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>${version.deploy.plugin}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>${version.install.plugin}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>${version.site.plugin}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh-external</artifactId>
-				<version>${version.wagon.plugin}</version>
-			</extension>
-		</extensions>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>sonatype-oss-release</id>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>sonatype-nexus-snapshots</id>
+					<name>Sonatype Nexus Snapshots</name>
+					<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+				</snapshotRepository>
+				<repository>
+					<id>sonatype-nexus-staging</id>
+					<name>Nexus Release Repository</name>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+			</distributionManagement>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>${version.release.plugin}</version>
+						<configuration>
+							<mavenExecutorId>forked-path</mavenExecutorId>
+							<useReleaseProfile>false</useReleaseProfile>
+							<arguments>-Psonatype-oss-release</arguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
